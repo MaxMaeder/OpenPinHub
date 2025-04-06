@@ -59,7 +59,7 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(
         window.addEventListener("resize", handleResize);
 
         // Listen for key events
-        terminal.onKey(({ key, domEvent }) => {
+        terminal.onKey(({ domEvent }) => {
           const ev = domEvent;
           const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
           if (ev.key === "Backspace") {
