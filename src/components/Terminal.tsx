@@ -1,4 +1,4 @@
-import React, {
+import {
   useRef,
   useLayoutEffect,
   useImperativeHandle,
@@ -6,6 +6,7 @@ import React, {
 } from "react";
 import { Terminal as XTerminal } from "xterm";
 import "xterm/css/xterm.css";
+import { FitAddon } from "@xterm/addon-fit";
 
 export interface TerminalHandle {
   /**
@@ -31,48 +32,61 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(
   ({ onCommand }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const xtermRef = useRef<XTerminal | null>(null);
+    const fitAddonRef = useRef<FitAddon | null>(null);
     // Buffer to keep track of what the user has typed.
     const inputBuffer = useRef<string>("");
 
     useLayoutEffect(() => {
       if (containerRef.current) {
-        xtermRef.current = new XTerminal({
+        const terminal = new XTerminal({
           cursorBlink: true,
           convertEol: true,
         });
-        xtermRef.current.open(containerRef.current);
-        xtermRef.current.focus();
+        xtermRef.current = terminal;
+        terminal.open(containerRef.current);
+        terminal.focus();
+
+        // Initialize and load the FitAddon to automatically adjust the terminal size.
+        const fitAddon = new FitAddon();
+        fitAddonRef.current = fitAddon;
+        terminal.loadAddon(fitAddon);
+        fitAddon.fit();
+
+        // Re-fit the terminal when the window is resized.
+        const handleResize = () => {
+          fitAddon.fit();
+        };
+        window.addEventListener("resize", handleResize);
 
         // Listen for key events
-        xtermRef.current.onKey(({ key, domEvent }) => {
+        terminal.onKey(({ key, domEvent }) => {
           const ev = domEvent;
           const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
           if (ev.key === "Backspace") {
             if (inputBuffer.current.length > 0) {
               inputBuffer.current = inputBuffer.current.slice(0, -1);
-              xtermRef.current?.write("\b \b");
+              terminal.write("\b \b");
             }
           } else if (ev.key === "Enter") {
-            // Instead of clearing the entire line,
-            // erase only what the user typed by sending backspaces.
+            // Erase only the user-typed content.
             const len = inputBuffer.current.length;
             for (let i = 0; i < len; i++) {
-              xtermRef.current?.write("\b \b");
+              terminal.write("\b \b");
             }
-            // Then move to a new line.
-            xtermRef.current?.write("\r\n");
             const command = inputBuffer.current;
             onCommand(command);
             inputBuffer.current = "";
           } else if (printable && ev.key.length === 1) {
             inputBuffer.current += ev.key;
-            xtermRef.current?.write(ev.key);
+            terminal.write(ev.key);
           }
         });
+
+        return () => {
+          window.removeEventListener("resize", handleResize);
+          terminal.dispose();
+        };
       }
-      return () => {
-        xtermRef.current?.dispose();
-      };
     }, [onCommand]);
 
     useImperativeHandle(
@@ -89,12 +103,11 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(
       <div
         ref={containerRef}
         style={{
-          height: "300px", // Ensure explicit height
           width: "100%",
+          height: "100%",
           backgroundColor: "#000",
           color: "#fff",
           fontFamily: "monospace",
-          padding: "10px",
         }}
       />
     );

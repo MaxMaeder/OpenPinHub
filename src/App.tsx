@@ -1,7 +1,7 @@
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 import { theme } from "./theme";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { AdbProvider, useAdb } from "./context/AdbProvider";
 
 import "xterm/css/xterm.css";
@@ -15,7 +15,7 @@ const AdbConsole: React.FC = () => {
   useEffect(() => {
     const unsubscribe = subscribeOutput((data: string) => {
       // Simply append the data.
-      terminalRef.current?.write("\r\n" + data);
+      terminalRef.current?.write(data);
     });
     return () => unsubscribe();
   }, [subscribeOutput]);
@@ -26,12 +26,14 @@ const AdbConsole: React.FC = () => {
         <button onClick={connect}>Connect</button>
         <button onClick={disconnect}>Disconnect</button>
       </div>
-      <Terminal
-        ref={terminalRef}
-        onCommand={(command: string) => {
-          sendCommand(command);
-        }}
-      />
+      <div style={{ height: "300px", width: "100%" }}>
+        <Terminal
+          ref={terminalRef}
+          onCommand={(command: string) => {
+            sendCommand(command);
+          }}
+        />
+      </div>
     </div>
   );
 };
