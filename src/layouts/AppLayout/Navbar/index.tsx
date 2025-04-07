@@ -1,6 +1,14 @@
 import { AppShell, Stack } from "@mantine/core";
 import ConnDetails from "./ConnDetails";
-import { IconBook2 } from "@tabler/icons-react";
+import {
+  IconBook2,
+  IconCpu,
+  IconDownload,
+  IconSettings,
+  IconTerminal,
+  IconTriangleSquareCircle,
+  IconUsersGroup,
+} from "@tabler/icons-react";
 import NavLink from "./NavLink";
 
 const Navbar = () => {
@@ -12,22 +20,30 @@ const Navbar = () => {
       <AppShell.Section>
         <Stack gap={0}>
           <NavLink label="About" Icon={IconBook2} to="/about">
-            <NavLink label="OpenPin" Icon={IconBook2} to="/about/openpin" />
+            <NavLink
+              label="OpenPin"
+              Icon={IconTriangleSquareCircle}
+              to="/about/openpin"
+            />
             <NavLink
               label="Interposers"
-              Icon={IconBook2}
+              Icon={IconCpu}
               to="/about/interposers"
             />
-            <NavLink label="Community" Icon={IconBook2} to="/about/community" />
+            <NavLink
+              label="Community"
+              Icon={IconUsersGroup}
+              to="/about/community"
+            />
           </NavLink>
           <NavLink
             label="Installers"
-            Icon={IconBook2}
+            Icon={IconDownload}
             to="/installers"
             match="/installers/*?"
           />
-          <NavLink label="Console" Icon={IconBook2} to="/console" />
-          <NavLink label="Settings" Icon={IconBook2} to="/settings" />
+          <NavLink label="Console" Icon={IconTerminal} to="/console" />
+          <NavLink label="Settings" Icon={IconSettings} to="/settings" />
         </Stack>
       </AppShell.Section>
     </AppShell.Navbar>

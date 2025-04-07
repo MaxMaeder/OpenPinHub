@@ -2,7 +2,7 @@ import { Button, Paper, Stack, Text, Title } from "@mantine/core";
 import { useAdb } from "../../../context/AdbProvider";
 
 const ConnDetails = () => {
-  const { connect, disconnect, connInfo } = useAdb();
+  const { isSupported, connInfo, connect, disconnect } = useAdb();
 
   return (
     <Paper withBorder p="sm">
@@ -11,7 +11,14 @@ const ConnDetails = () => {
           Connect Pin
         </Title>
 
-        {connInfo ? (
+        {isSupported ? (
+          <>
+            <Text>Unsupported, use Google Chrome.</Text>
+            <Button mt="md" disabled>
+              Browser Unsupported
+            </Button>
+          </>
+        ) : connInfo ? (
           <>
             <Text>
               Device name: {connInfo.productName}, model:{" "}

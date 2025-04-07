@@ -31,6 +31,7 @@ const options: Options = {
 };
 
 interface AdbContextType {
+  isSupported: boolean;
   adbClient: AdbClient | null;
   shell: Shell | null;
   transport: WebUsbTransport | null;
@@ -56,6 +57,8 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
   const [connInfo, setConnInfo] = useState<AdbConnectionInformation | null>(
     null
   );
+
+  const isSupported = "usb" in navigator;
 
   // Use an event emitter for output
   const outputEmitter = useRef(new EventEmitter());
@@ -133,6 +136,7 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
   return (
     <AdbContext.Provider
       value={{
+        isSupported,
         adbClient,
         shell,
         transport,
