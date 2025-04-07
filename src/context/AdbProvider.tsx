@@ -7,6 +7,7 @@ import { WebUsbTransport } from "../libs/wadb/transport";
 import { remoteAuthHandler } from "../services/adbAuth";
 import { EventEmitter } from "events";
 import { AdbConnectionInformation } from "../libs/wadb/AdbConnectionInformation";
+import { ADB_PUSH_CHUNK_SIZE, ADB_PUSH_FILE_PERMS } from "../config/adbConfig";
 
 // A simple KeyStore implementation
 class MyKeyStore implements KeyStore {
@@ -38,6 +39,8 @@ interface AdbContextType {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   sendCommand: (command: string) => void;
+  pullFile: (remotePath: string) => Promise<Blob>;
+  pushFile: (blob: Blob, remotePath: string) => Promise<void>;
 }
 
 const AdbContext = createContext<AdbContextType | null>(null);
@@ -106,6 +109,27 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
     };
   };
 
+  const pullFile = async (remotePath: string): Promise<Blob> => {
+    if (!adbClient) {
+      throw new Error("Shell is not connected");
+    }
+
+    return await adbClient.pull(remotePath);
+  };
+
+  const pushFile = async (blob: Blob, remotePath: string): Promise<void> => {
+    if (!adbClient) {
+      throw new Error("Shell is not connected");
+    }
+
+    return await adbClient.push(
+      blob,
+      remotePath,
+      ADB_PUSH_FILE_PERMS,
+      ADB_PUSH_CHUNK_SIZE
+    );
+  };
+
   return (
     <AdbContext.Provider
       value={{
@@ -117,6 +141,8 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
         connect,
         disconnect,
         sendCommand,
+        pullFile,
+        pushFile,
       }}
     >
       {children}
