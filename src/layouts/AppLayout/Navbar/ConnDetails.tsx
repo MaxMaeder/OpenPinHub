@@ -11,7 +11,7 @@ const ConnDetails = () => {
           Connect Pin
         </Title>
 
-        {isSupported ? (
+        {!isSupported ? (
           <>
             <Text>Unsupported, use Google Chrome.</Text>
             <Button mt="md" disabled>
