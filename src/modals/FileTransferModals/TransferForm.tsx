@@ -64,6 +64,7 @@ const TransferForm = ({ mode, onSubmit }: TransferFormProps) => {
             control={control}
             placeholder="Pick file"
             label="File to Upload"
+            rules={{ required: true }}
             error={errors.file?.message}
           />
         )}
@@ -73,6 +74,7 @@ const TransferForm = ({ mode, onSubmit }: TransferFormProps) => {
           control={control}
           label="Path"
           placeholder="/destination/path"
+          rules={{ required: true }}
           error={errors.path?.message}
         />
 
