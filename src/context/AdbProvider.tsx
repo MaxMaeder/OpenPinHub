@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useRef } from "react";
+import { createContext, useContext, ReactNode, useRef, useState } from "react";
 import { KeyStore } from "../libs/wadb/KeyStore";
 import { Options } from "../libs/wadb/Options";
 import { AdbClient } from "../libs/wadb/AdbClient";
@@ -6,6 +6,7 @@ import { Shell } from "../libs/wadb/Shell";
 import { WebUsbTransport } from "../libs/wadb/transport";
 import { remoteAuthHandler } from "../services/adbAuth";
 import { EventEmitter } from "events";
+import { AdbConnectionInformation } from "../libs/wadb/AdbConnectionInformation";
 
 // A simple KeyStore implementation
 class MyKeyStore implements KeyStore {
@@ -32,6 +33,7 @@ interface AdbContextType {
   adbClient: AdbClient | null;
   shell: Shell | null;
   transport: WebUsbTransport | null;
+  connInfo: AdbConnectionInformation | null;
   subscribeOutput: (callback: (data: string) => void) => () => void;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
@@ -44,10 +46,11 @@ interface AdbProviderProps {
   children: ReactNode;
 }
 
-export const AdbProvider: React.FC<AdbProviderProps> = ({ children }) => {
-  const [adbClient, setAdbClient] = React.useState<AdbClient | null>(null);
-  const [shell, setShell] = React.useState<Shell | null>(null);
-  const [transport, setTransport] = React.useState<WebUsbTransport | null>(
+export const AdbProvider = ({ children }: AdbProviderProps) => {
+  const [adbClient, setAdbClient] = useState<AdbClient | null>(null);
+  const [shell, setShell] = useState<Shell | null>(null);
+  const [transport, setTransport] = useState<WebUsbTransport | null>(null);
+  const [connInfo, setConnInfo] = useState<AdbConnectionInformation | null>(
     null
   );
 
@@ -58,14 +61,17 @@ export const AdbProvider: React.FC<AdbProviderProps> = ({ children }) => {
     try {
       const t = await WebUsbTransport.open(options);
       const client = new AdbClient(t, options, new MyKeyStore());
-      await client.connect();
+
+      const connInfo = await client.connect();
       const shellInstance = await client.interactiveShell((data: string) => {
         console.log("Shell output:", data);
         outputEmitter.current.emit("data", data);
       });
+
       setTransport(t);
       setAdbClient(client);
       setShell(shellInstance);
+      setConnInfo(connInfo);
     } catch (error) {
       console.error("Connection Failed:", error);
     }
@@ -78,7 +84,7 @@ export const AdbProvider: React.FC<AdbProviderProps> = ({ children }) => {
       setShell(null);
       setAdbClient(null);
       setTransport(null);
-      // Optionally, you might want to emit a disconnect event here.
+      setConnInfo(null);
     } catch (error) {
       console.error("Error closing the connection:", error);
     }
@@ -106,6 +112,7 @@ export const AdbProvider: React.FC<AdbProviderProps> = ({ children }) => {
         adbClient,
         shell,
         transport,
+        connInfo,
         subscribeOutput,
         connect,
         disconnect,
