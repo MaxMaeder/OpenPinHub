@@ -21,7 +21,7 @@ const Console = () => {
   }, [subscribeOutput]);
 
   return (
-    <PageLayout title="ADB Console">
+    <PageLayout title="ADB Console" warnAdbDisconnected>
       <Stack>
         <Paper h="600px" p="md" bg="#000" withBorder>
           <Terminal
