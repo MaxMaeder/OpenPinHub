@@ -25,7 +25,11 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <Header opened={opened} onClick={toggle} />
       <Navbar />
 
-      <AppShell.Main style={{ ...bgStyle }}>{children}</AppShell.Main>
+      <AppShell.Main
+        style={{ display: "flex", position: "relative", ...bgStyle }}
+      >
+        {children}
+      </AppShell.Main>
     </AppShell>
   );
 };

@@ -1,18 +1,17 @@
 import { useEffect } from "react";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { Button } from "@mantine/core";
-import { useAppDispatch, useAppSelector } from "src/state/hooks";
-import { setSources, selectAllSources } from "src/state/slices/sourcesSlice";
 import SourceField from "./SourceField";
-import Section from "./Section";
+import PageSection from "../../components/PageSection";
+import { useSources, useSourcesActions } from "src/hooks/state/sourceStore";
 
 interface FormValues {
   sources: { url: string }[];
 }
 
 export default function SourcesForm() {
-  const savedSources = useAppSelector(selectAllSources);
-  const dispatch = useAppDispatch();
+  const savedSources = useSources();
+  const { setSources } = useSourcesActions();
 
   const {
     control,
@@ -20,10 +19,7 @@ export default function SourcesForm() {
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      sources: [
-        ...savedSources.map((source) => ({ url: source.url })),
-        { url: "" },
-      ],
+      sources: [...savedSources.map((s) => ({ url: s })), { url: "" }],
     },
   });
 
@@ -45,16 +41,16 @@ export default function SourcesForm() {
   }, [sources, append]);
 
   const onSubmit = (data: FormValues) => {
-    // Filter out empty URLs and create Source objects using the URL as an ID.
+    // Filter out empty URLs
     const filteredSources = data.sources
       .filter((s) => s.url.trim() !== "")
-      .map((s) => ({ id: s.url, url: s.url }));
-    dispatch(setSources(filteredSources));
+      .map((s) => s.url);
+    setSources(filteredSources);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Section title="Installer Sources">
+      <PageSection title="Installer Sources">
         {fields.map((field, index) => (
           <SourceField
             key={field.id}
@@ -67,7 +63,7 @@ export default function SourcesForm() {
           />
         ))}
         <Button type="submit">Save Sources</Button>
-      </Section>
+      </PageSection>
     </form>
   );
 }

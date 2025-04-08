@@ -1,4 +1,4 @@
-import { Badge, Group, Stack, Title } from "@mantine/core";
+import { Badge, Flex, Group, Title } from "@mantine/core";
 import { IconAlertTriangleFilled } from "@tabler/icons-react";
 import { ReactNode } from "react";
 import { useAdb } from "../../context/AdbProvider";
@@ -18,8 +18,8 @@ const PageLayout = ({
   const isConn = connInfo != null;
 
   return (
-    <Stack gap="md">
-      <Group>
+    <Flex direction="column" flex={1}>
+      <Group mb="md">
         <Title order={1} size="h2">
           {title}
         </Title>
@@ -34,7 +34,7 @@ const PageLayout = ({
       </Group>
 
       {children}
-    </Stack>
+    </Flex>
   );
 };
 

@@ -1,12 +1,12 @@
 import { Button, Stack } from "@mantine/core";
 import PageLayout from "src/layouts/PageLayout";
 import SourcesForm from "./SourcesForm";
-import Section from "./Section";
-import { persistor } from "src/state/store";
+import PageSection from "../../components/PageSection";
+import { clearPersistedSources } from "src/hooks/state/sourceStore";
 
 const Settings = () => {
   const handleReset = async () => {
-    await persistor.purge();
+    clearPersistedSources();
     location.reload();
   };
 
@@ -14,9 +14,9 @@ const Settings = () => {
     <PageLayout title="Settings">
       <Stack>
         <SourcesForm />
-        <Section title="Reset">
+        <PageSection title="Reset">
           <Button onClick={handleReset}>Clear Local Data</Button>
-        </Section>
+        </PageSection>
       </Stack>
     </PageLayout>
   );

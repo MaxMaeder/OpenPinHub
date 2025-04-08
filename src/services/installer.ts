@@ -1,16 +1,37 @@
 import { Octokit } from "@octokit/rest";
-import { getGithubAsset } from "src/api/githubProxy";
+import { fetchGithubAsset } from "src/api/githubProxy";
 import { INSTALLER_MANIFEST_NAME } from "src/config/installerConfig";
-import {
-  InstallerRepo,
-  Release,
-  InstallerManifest,
-} from "src/state/slices/installersSlice";
+export interface InstallerAction {
+  title: string;
+  description: string;
+  doc: string;
+  script: string;
+}
+export interface InstallerManifest {
+  doc: string;
+  actions: InstallerAction[];
+}
+export interface InstallerRelease {
+  id: number;
+  name: string;
+  date: string;
+  installer: InstallerManifest;
+  assets: Record<string, string>;
+}
+export interface InstallerRepo {
+  id: string;
+  name: string;
+  description: string;
+  releases: InstallerRelease[];
+}
 
 export const getInstallerRepoUrl = (owner: string, repo: string) =>
   `https://github.com/${owner}/${repo}/`;
 
-export const getInstallerAssetUrl = (release: Release, name: string) => {
+export const getInstallerAssetUrl = (
+  release: InstallerRelease,
+  name: string
+) => {
   return release.assets[name];
 };
 
@@ -43,7 +64,7 @@ export const fetchInstallerFromRepoUrl = async (
   const { data: releases } = await octokit.repos.listReleases({ owner, repo });
   // console.log(releases);
 
-  const validReleases: Release[] = [];
+  const validReleases: InstallerRelease[] = [];
 
   // Process each release.
   for (const release of releases) {
@@ -70,7 +91,7 @@ export const fetchInstallerFromRepoUrl = async (
 
     try {
       // Fetch the manifest file from its download URL.
-      const manifest: InstallerManifest = await getGithubAsset(
+      const manifest: InstallerManifest = await fetchGithubAsset(
         installerAsset.browser_download_url,
         "json"
       );

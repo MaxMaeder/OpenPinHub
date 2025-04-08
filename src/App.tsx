@@ -14,8 +14,6 @@ import Interposers from "./routes/about/Interposers";
 import Community from "./routes/about/Community";
 import Installers from "./routes/installers/Installers";
 import Settings from "./routes/Settings";
-import { store } from "./state/store";
-import { Provider as ReduxProvider } from "react-redux";
 import InstallerDetails from "./routes/installers/InstallerDetails";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./api/query";
@@ -62,24 +60,22 @@ const Routes = () => (
 
 const App = () => {
   return (
-    <ReduxProvider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider theme={theme} defaultColorScheme="dark">
-          <AdbProvider>
-            <ModalsProvider
-              modals={{
-                fileUpload: FileUploadModal,
-                fileDownload: FileDownloadModal,
-              }}
-            >
-              <AppLayout>
-                <Routes />
-              </AppLayout>
-            </ModalsProvider>
-          </AdbProvider>
-        </MantineProvider>
-      </QueryClientProvider>
-    </ReduxProvider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider theme={theme} defaultColorScheme="dark">
+        <AdbProvider>
+          <ModalsProvider
+            modals={{
+              fileUpload: FileUploadModal,
+              fileDownload: FileDownloadModal,
+            }}
+          >
+            <AppLayout>
+              <Routes />
+            </AppLayout>
+          </ModalsProvider>
+        </AdbProvider>
+      </MantineProvider>
+    </QueryClientProvider>
   );
 };
 

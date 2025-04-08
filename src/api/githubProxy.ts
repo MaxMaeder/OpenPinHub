@@ -4,7 +4,7 @@ const githubClient = axios.create({
   baseURL: "https://assetproxy.openpin.org/",
 });
 
-export const getGithubAsset = async (
+export const fetchGithubAsset = async (
   assetUrl: string,
   type: ResponseType = "text"
 ) => {
