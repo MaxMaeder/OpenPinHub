@@ -1,4 +1,5 @@
 import { Text, NavLink as MNavLink } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { Icon } from "@tabler/icons-react";
 import { ReactNode } from "react";
 import { Link, useRoute } from "wouter";
@@ -8,12 +9,24 @@ type NavLinkProps = {
   to: string;
   // What paths this NavLink will appear 'active' for
   match?: string;
+
   label: string;
   Icon: Icon;
+
+  startOpen?: boolean;
+
   children?: ReactNode;
 };
 
-const NavLink = ({ to, match, label, Icon, children }: NavLinkProps) => {
+const NavLink = ({
+  to,
+  match,
+  label,
+  Icon,
+  startOpen,
+  children,
+}: NavLinkProps) => {
+  const [opened, { toggle }] = useDisclosure(startOpen);
   const [isMatch] = useRoute(match ?? to);
 
   return (
@@ -22,6 +35,8 @@ const NavLink = ({ to, match, label, Icon, children }: NavLinkProps) => {
       leftSection={<Icon size={18} stroke={2.75} />}
       variant="subtle"
       active={isMatch}
+      opened={opened}
+      onChange={toggle}
       component={Link}
       to={to}
     >

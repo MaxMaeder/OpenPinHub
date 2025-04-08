@@ -1,9 +1,9 @@
 import "@mantine/core/styles.css";
+import "xterm/css/xterm.css";
+
 import { MantineProvider } from "@mantine/core";
 import { theme } from "./theme";
 import { AdbProvider } from "./context/AdbProvider";
-
-import "xterm/css/xterm.css";
 import AppLayout from "./layouts/AppLayout";
 import { Redirect, Route, Switch } from "wouter";
 import Console from "./routes/Console";
@@ -13,45 +13,63 @@ import FileDownloadModal from "./modals/FileTransferModals/FileDownloadModal";
 import OpenPin from "./routes/about/OpenPin";
 import Interposers from "./routes/about/Interposers";
 import Community from "./routes/about/Community";
+import Installers from "./routes/Installers";
+import Settings from "./routes/Settings";
+import { store } from "./state/store";
+import { Provider as ReduxProvider } from "react-redux";
 
-export default function App() {
+const Routes = () => (
+  <Switch>
+    <Route path="/">
+      <Redirect to="/about/openpin" />
+    </Route>
+    <Route path="/about" nest>
+      <Switch>
+        <Route path="/openpin">
+          <OpenPin />
+        </Route>
+        <Route path="/interposers">
+          <Interposers />
+        </Route>
+        <Route path="/community">
+          <Community />
+        </Route>
+        <Route>
+          <Redirect to="/openpin" />
+        </Route>
+      </Switch>
+    </Route>
+    <Route path="/installers">
+      <Installers />
+    </Route>
+    <Route path="/console">
+      <Console />
+    </Route>
+    <Route path="/settings">
+      <Settings />
+    </Route>
+  </Switch>
+);
+
+const App = () => {
   return (
-    <MantineProvider theme={theme} defaultColorScheme="dark">
-      <AdbProvider>
-        <ModalsProvider
-          modals={{
-            fileUpload: FileUploadModal,
-            fileDownload: FileDownloadModal,
-          }}
-        >
-          <AppLayout>
-            <Switch>
-              <Route path="/">
-                <Redirect to="/about/openpin" />
-              </Route>
-              <Route path="/about" nest>
-                <Switch>
-                  <Route path="/openpin">
-                    <OpenPin />
-                  </Route>
-                  <Route path="/interposers">
-                    <Interposers />
-                  </Route>
-                  <Route path="/community">
-                    <Community />
-                  </Route>
-                  <Route>
-                    <Redirect to="/openpin" />
-                  </Route>
-                </Switch>
-              </Route>
-              <Route path="/console">
-                <Console />
-              </Route>
-            </Switch>
-          </AppLayout>
-        </ModalsProvider>
-      </AdbProvider>
-    </MantineProvider>
+    <ReduxProvider store={store}>
+      <MantineProvider theme={theme} defaultColorScheme="dark">
+        <AdbProvider>
+          <ModalsProvider
+            modals={{
+              fileUpload: FileUploadModal,
+              fileDownload: FileDownloadModal,
+            }}
+          >
+            <AppLayout>
+              <Routes />
+            </AppLayout>
+          </ModalsProvider>
+        </AdbProvider>
+      </MantineProvider>
+    </ReduxProvider>
   );
-}
+};
+
+export default App;

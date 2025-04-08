@@ -19,7 +19,7 @@ const Navbar = () => {
       </AppShell.Section>
       <AppShell.Section>
         <Stack gap={0}>
-          <NavLink label="About" Icon={IconBook2} to="/about">
+          <NavLink label="About" Icon={IconBook2} to="/about" startOpen>
             <NavLink
               label="OpenPin"
               Icon={IconTriangleSquareCircle}
