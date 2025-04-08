@@ -37,11 +37,9 @@ export default function SourcesForm() {
 
   // Always ensure there is a blank field at the end.
   useEffect(() => {
-    if (
-      !sources ||
-      sources.length === 0 ||
-      sources[sources.length - 1].url.trim() !== ""
-    ) {
+    const lastUrl = sources[sources.length - 1]?.url.trim();
+
+    if (lastUrl) {
       append({ url: "" }, { shouldFocus: false });
     }
   }, [sources, append]);

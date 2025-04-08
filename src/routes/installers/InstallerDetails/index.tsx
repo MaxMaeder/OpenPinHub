@@ -8,6 +8,8 @@ import {
   selectInstallerByParts,
 } from "src/state/slices/installersSlice";
 import { useParams } from "wouter";
+import ReleaseDetails from "./ReleaseDetails";
+import { IconTag } from "@tabler/icons-react";
 
 type InstallerDetailsParams = {
   owner: string;
@@ -29,9 +31,14 @@ const InstallerDetails = () => {
     selectInstallerByParts(state, owner, repo)
   );
 
+  const [selectedRelease, setSelectedRelease] = useState<string | null>(null);
   const releaseOptions = useMemo(() => {
-    if (installer?.releases.length == 0) {
+    if (!installer || !installer.releases[0]) {
       return [];
+    }
+
+    if (!selectedRelease) {
+      setSelectedRelease(installer.releases[0].id.toString());
     }
 
     return installer.releases.map((r) => ({
@@ -39,8 +46,10 @@ const InstallerDetails = () => {
       label: r.name,
     }));
   }, [installer]);
-  const [selectedRelease, setSelectedRelease] = useState(
-    installer?.releases[0]?.id.toString()
+
+  const release = useMemo(
+    () => installer?.releases.find((r) => r.id.toString() == selectedRelease),
+    [installer, selectedRelease]
   );
 
   if (!installer) return <></>;
@@ -52,7 +61,11 @@ const InstallerDetails = () => {
           data={releaseOptions}
           value={selectedRelease}
           onChange={setSelectedRelease}
+          leftSection={<IconTag size={16} />}
         />
+        {installer && release && (
+          <ReleaseDetails installer={installer} release={release} />
+        )}
       </Stack>
       <p>{JSON.stringify(installer)}</p>
     </PageLayout>

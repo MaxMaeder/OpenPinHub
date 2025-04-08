@@ -17,6 +17,8 @@ import Settings from "./routes/Settings";
 import { store } from "./state/store";
 import { Provider as ReduxProvider } from "react-redux";
 import InstallerDetails from "./routes/installers/InstallerDetails";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./api/query";
 
 const Routes = () => (
   <Switch>
@@ -61,20 +63,22 @@ const Routes = () => (
 const App = () => {
   return (
     <ReduxProvider store={store}>
-      <MantineProvider theme={theme} defaultColorScheme="dark">
-        <AdbProvider>
-          <ModalsProvider
-            modals={{
-              fileUpload: FileUploadModal,
-              fileDownload: FileDownloadModal,
-            }}
-          >
-            <AppLayout>
-              <Routes />
-            </AppLayout>
-          </ModalsProvider>
-        </AdbProvider>
-      </MantineProvider>
+      <QueryClientProvider client={queryClient}>
+        <MantineProvider theme={theme} defaultColorScheme="dark">
+          <AdbProvider>
+            <ModalsProvider
+              modals={{
+                fileUpload: FileUploadModal,
+                fileDownload: FileDownloadModal,
+              }}
+            >
+              <AppLayout>
+                <Routes />
+              </AppLayout>
+            </ModalsProvider>
+          </AdbProvider>
+        </MantineProvider>
+      </QueryClientProvider>
     </ReduxProvider>
   );
 };

@@ -10,10 +10,14 @@ import {
 export const getInstallerRepoUrl = (owner: string, repo: string) =>
   `https://github.com/${owner}/${repo}/`;
 
+export const getInstallerAssetUrl = (release: Release, name: string) => {
+  return release.assets[name];
+};
+
 // Helper function to extract owner and repo from a GitHub URL.
 const parseGithubUrl = (githubUrl: string) => {
   const match = githubUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-  if (!match) {
+  if (!match || !match[1] || !match[2]) {
     throw new Error(`Invalid GitHub repo URL: ${githubUrl}`);
   }
   return { owner: match[1], repo: match[2] };
@@ -37,7 +41,7 @@ export const fetchInstallerFromRepoUrl = async (
 
   // List releases for the repository.
   const { data: releases } = await octokit.repos.listReleases({ owner, repo });
-  console.log(releases);
+  // console.log(releases);
 
   const validReleases: Release[] = [];
 
@@ -53,6 +57,17 @@ export const fetchInstallerFromRepoUrl = async (
       continue;
     }
 
+    // Create an object mapping each asset name to its download URL.
+    const assetsMapping = release.assets.reduce<Record<string, string>>(
+      (acc, asset) => {
+        if (asset.browser_download_url) {
+          acc[asset.name] = asset.browser_download_url;
+        }
+        return acc;
+      },
+      {}
+    );
+
     try {
       // Fetch the manifest file from its download URL.
       const manifest: InstallerManifest = await getGithubAsset(
@@ -65,6 +80,7 @@ export const fetchInstallerFromRepoUrl = async (
         name: release.name || release.tag_name,
         date: release.created_at,
         installer: manifest,
+        assets: assetsMapping,
       });
     } catch (error) {
       // Log errors and skip the release on failure to parse.

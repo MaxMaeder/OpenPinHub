@@ -22,6 +22,7 @@ export interface Release {
   name: string;
   date: string;
   installer: InstallerManifest;
+  assets: Record<string, string>;
 }
 export interface InstallerRepo {
   id: string;
@@ -30,8 +31,8 @@ export interface InstallerRepo {
   releases: Release[];
 }
 
-const installersAdapter = createEntityAdapter<InstallerRepo, string>({
-  selectId: (repo) => repo.id,
+const installersAdapter = createEntityAdapter({
+  selectId: (repo: InstallerRepo) => repo.id,
 });
 
 /**
@@ -108,14 +109,13 @@ const installersSlice = createSlice({
   },
 });
 
-// Todo: these really should return InstallerRepo | undefined but they don't
 export const { selectAll: selectInstallers, selectById: selectInstallerById } =
-  installersAdapter.getSelectors((state: RootState) => state.installers);
+  installersAdapter.getSelectors<RootState>((state) => state.installers);
 
 export const selectInstallerByParts = (
   state: RootState,
   owner: string,
   repo: string
-) => selectInstallerById(state, `${owner}/${repo}`);
+): InstallerRepo | undefined => selectInstallerById(state, `${owner}/${repo}`);
 
 export default installersSlice.reducer;
