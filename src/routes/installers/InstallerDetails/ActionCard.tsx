@@ -6,7 +6,7 @@ type ActionCardProps = {
   action: InstallerAction;
 };
 
-const ActionCard = ({ release, action }: ActionCardProps) => {
+const ActionCard = ({ action }: ActionCardProps) => {
   return (
     <Paper p="md" withBorder miw="300px">
       <Stack>
