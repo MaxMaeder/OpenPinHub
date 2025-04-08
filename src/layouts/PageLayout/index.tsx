@@ -28,7 +28,7 @@ const PageLayout = ({
             color="red"
             leftSection={<IconAlertTriangleFilled size={12} />}
           >
-            Device disconnected
+            Pin disconnected
           </Badge>
         )}
       </Group>

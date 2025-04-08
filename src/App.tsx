@@ -1,5 +1,4 @@
 import "@mantine/core/styles.css";
-import "xterm/css/xterm.css";
 
 import { MantineProvider } from "@mantine/core";
 import { theme } from "./theme";
@@ -13,10 +12,11 @@ import FileDownloadModal from "./modals/FileTransferModals/FileDownloadModal";
 import OpenPin from "./routes/about/OpenPin";
 import Interposers from "./routes/about/Interposers";
 import Community from "./routes/about/Community";
-import Installers from "./routes/Installers";
+import Installers from "./routes/installers/Installers";
 import Settings from "./routes/Settings";
 import { store } from "./state/store";
 import { Provider as ReduxProvider } from "react-redux";
+import InstallerDetails from "./routes/installers/InstallerDetails";
 
 const Routes = () => (
   <Switch>
@@ -39,8 +39,15 @@ const Routes = () => (
         </Route>
       </Switch>
     </Route>
-    <Route path="/installers">
-      <Installers />
+    <Route path="/installers" nest>
+      <Switch>
+        <Route path="/">
+          <Installers />
+        </Route>
+        <Route path="/:owner/:repo">
+          <InstallerDetails />
+        </Route>
+      </Switch>
     </Route>
     <Route path="/console">
       <Console />

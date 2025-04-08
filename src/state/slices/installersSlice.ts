@@ -2,86 +2,80 @@ import {
   createSlice,
   createAsyncThunk,
   createEntityAdapter,
-  createSelector,
 } from "@reduxjs/toolkit";
-import { Octokit } from "@octokit/rest";
 import { RootState } from "../store";
 import { selectAllSources } from "./sourcesSlice";
+import { fetchInstallerFromRepoUrl } from "src/services/installer";
 
-export interface Release {
-  name: string;
-  artifacts: string[];
+export interface InstallerAction {
+  title: string;
+  description: string;
+  doc: string;
+  script: string;
 }
-
-export interface InstallerData {
+export interface InstallerManifest {
+  doc: string;
+  actions: InstallerAction[];
+}
+export interface Release {
+  id: number;
+  name: string;
+  date: string;
+  installer: InstallerManifest;
+}
+export interface InstallerRepo {
   id: string;
   name: string;
   description: string;
   releases: Release[];
 }
 
-const installersAdapter = createEntityAdapter<InstallerData, string>({
-  selectId: (installer) => installer.id,
+const installersAdapter = createEntityAdapter<InstallerRepo, string>({
+  selectId: (repo) => repo.id,
 });
 
+/**
+ * Fetch installer data for a single repository.
+ * This thunk takes a GitHub URL as its parameter.
+ */
+export const fetchInstaller = createAsyncThunk<
+  InstallerRepo,
+  string,
+  { rejectValue: string }
+>("installers/fetchInstaller", async (githubUrl, thunkAPI) => {
+  try {
+    const data = await fetchInstallerFromRepoUrl(githubUrl);
+    return data;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(
+      error.message || `Failed to fetch installer for ${githubUrl}`
+    );
+  }
+});
+
+/**
+ * Fetch installer repositories in bulk.
+ * This thunk retrieves the list of URLs from the state and dispatches
+ * fetchInstaller for each one.
+ */
 export const fetchInstallers = createAsyncThunk<
-  InstallerData[],
+  InstallerRepo[],
   void,
   { state: RootState; rejectValue: string }
 >("installers/fetchInstallers", async (_, thunkAPI) => {
   const state = thunkAPI.getState();
-  // Get installer URLs from the sources slice.
   const installerUrls = selectAllSources(state).map((source) => source.url);
 
-  const octokit = new Octokit();
+  // Dispatch fetchInstaller for each URL and wait for all to finish.
+  const results = await Promise.all(
+    installerUrls.map((url) => thunkAPI.dispatch(fetchInstaller(url)).unwrap())
+  );
 
-  // Map each URL to a promise that fetches its installer data.
-  const installerDataPromises = installerUrls.map(async (url) => {
-    // Extract owner and repo using a regex.
-    const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-    if (!match) {
-      throw new Error(`Invalid GitHub repo URL: ${url}`);
-    }
-    const owner = match[1];
-    const repo = match[2];
-
-    // Fetch repo details and releases.
-    const { data: repoDetails } = await octokit.repos.get({ owner, repo });
-    const { data: releases } = await octokit.repos.listReleases({
-      owner,
-      repo,
-    });
-
-    // Format releases.
-    const formattedReleases: Release[] = releases.map((release) => ({
-      name: release.name || release.tag_name,
-      artifacts: release.assets.map((asset) => asset.name),
-    }));
-
-    return {
-      id: repoDetails.full_name, // e.g. "owner/repo"
-      name: repoDetails.name,
-      description: repoDetails.description || "",
-      releases: formattedReleases,
-    } as InstallerData;
-  });
-
-  // Wait for all promises to settle.
-  const results = await Promise.allSettled(installerDataPromises);
-
-  // Filter out only the fulfilled promises.
-  const installers: InstallerData[] = results
-    .filter(
-      (result): result is PromiseFulfilledResult<InstallerData> =>
-        result.status === "fulfilled"
-    )
-    .map((result) => result.value);
-
-  if (installers.length === 0) {
+  if (results.length === 0) {
     return thunkAPI.rejectWithValue("Failed to fetch any installers.");
   }
 
-  return installers;
+  return results;
 });
 
 const installersSlice = createSlice({
@@ -93,6 +87,7 @@ const installersSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Bulk fetch.
       .addCase(fetchInstallers.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -104,18 +99,23 @@ const installersSlice = createSlice({
       .addCase(fetchInstallers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      // TODO: errors for this
+      // Handle individual installer fetch.
+      .addCase(fetchInstaller.fulfilled, (state, action) => {
+        installersAdapter.upsertOne(state, action.payload);
       });
   },
 });
 
-export const { selectAll: selectInstallers } = installersAdapter.getSelectors(
-  (state: RootState) => state.installers
-);
+// Todo: these really should return InstallerRepo | undefined but they don't
+export const { selectAll: selectInstallers, selectById: selectInstallerById } =
+  installersAdapter.getSelectors((state: RootState) => state.installers);
 
-export const selectInstallerUrls = createSelector(
-  selectInstallers,
-  (installers) =>
-    installers.map((installer) => `https://github.com/${installer.id}`)
-);
+export const selectInstallerByParts = (
+  state: RootState,
+  owner: string,
+  repo: string
+) => selectInstallerById(state, `${owner}/${repo}`);
 
 export default installersSlice.reducer;
