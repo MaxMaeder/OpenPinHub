@@ -222,6 +222,9 @@ export class ActionRunner {
     this.store.reset();
     this.store.setStatus("running");
 
+    this.actionAssets = {};
+    this.queuedStages = [];
+
     this.createDownloadActionScriptStage();
     this.createParseActionStage();
     console.log(this.queuedStages);
