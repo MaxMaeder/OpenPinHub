@@ -15,7 +15,7 @@ export interface InstallerRelease {
   id: number;
   name: string;
   date: string;
-  installer: InstallerManifest;
+  manifest: InstallerManifest;
   assets: Record<string, string>;
 }
 export interface InstallerRepo {
@@ -28,12 +28,16 @@ export interface InstallerRepo {
 export const getInstallerRepoUrl = (owner: string, repo: string) =>
   `https://github.com/${owner}/${repo}/`;
 
-export const getInstallerAssetUrl = (
-  release: InstallerRelease,
-  name: string
-) => {
+export const getReleaseById = (installer: InstallerRepo, id: number) =>
+  installer.releases.find((release) => release.id == id);
+export const getReleaseAssetUrl = (release: InstallerRelease, name: string) => {
   return release.assets[name];
 };
+
+export const getActionSlug = (action: InstallerAction) =>
+  action.title.toLowerCase().replace(" ", "-");
+export const getActionFromSlug = (release: InstallerRelease, slug: string) =>
+  release.manifest.actions.find((action) => getActionSlug(action) == slug);
 
 // Helper function to extract owner and repo from a GitHub URL.
 const parseGithubUrl = (githubUrl: string) => {
@@ -100,7 +104,7 @@ export const fetchInstallerFromRepoUrl = async (
         id: release.id,
         name: release.name || release.tag_name,
         date: release.created_at,
-        installer: manifest,
+        manifest: manifest,
         assets: assetsMapping,
       });
     } catch (error) {

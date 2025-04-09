@@ -19,8 +19,8 @@ const InstallerDetails = () => {
   const installerQuery = useQueryInstaller(repoUrl);
 
   const title = installerQuery.data?.name
-    ? `Install ${installerQuery.data.name}`
-    : "Install";
+    ? `${installerQuery.data.name} Installer`
+    : "Installer";
 
   return (
     <PageLayout title={title} warnAdbDisconnected>

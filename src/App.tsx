@@ -17,6 +17,8 @@ import Settings from "./routes/Settings";
 import InstallerDetails from "./routes/installers/InstallerDetails";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./api/query";
+import RunAction from "./routes/installers/RunAction";
+import NotFound from "./components/NotFound";
 
 const Routes = () => (
   <Switch>
@@ -44,8 +46,21 @@ const Routes = () => (
         <Route path="/">
           <Installers />
         </Route>
-        <Route path="/:owner/:repo">
-          <InstallerDetails />
+        <Route path="/:owner/:repo" nest>
+          <Switch>
+            <Route path="/:release/:action">
+              <RunAction />
+            </Route>
+            <Route path="/">
+              <InstallerDetails />
+            </Route>
+            <Route>
+              <NotFound />
+            </Route>
+          </Switch>
+        </Route>
+        <Route>
+          <NotFound />
         </Route>
       </Switch>
     </Route>
@@ -54,6 +69,9 @@ const Routes = () => (
     </Route>
     <Route path="/settings">
       <Settings />
+    </Route>
+    <Route>
+      <NotFound />
     </Route>
   </Switch>
 );

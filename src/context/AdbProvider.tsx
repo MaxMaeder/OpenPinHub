@@ -30,7 +30,7 @@ const options: Options = {
   authHandler: remoteAuthHandler,
 };
 
-interface AdbContextType {
+export interface AdbContextType {
   isSupported: boolean;
   adbClient: AdbClient | null;
   shell: Shell | null;

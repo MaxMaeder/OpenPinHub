@@ -1,7 +1,7 @@
 import { Group, Space, Stack } from "@mantine/core";
 import MdDoc from "src/components/MdDoc";
 import {
-  getInstallerAssetUrl,
+  getReleaseAssetUrl,
   InstallerRelease,
   InstallerRepo,
 } from "src/services/installer";
@@ -14,21 +14,21 @@ type ReleaseDetailsProps = {
 };
 
 const ReleaseDetails = ({ release }: ReleaseDetailsProps) => {
-  const installerDoc = getInstallerAssetUrl(release, release.installer.doc);
+  const releaseDoc = getReleaseAssetUrl(release, release.manifest.doc);
 
   return (
     <Stack w="100%">
       <Space />
-      {installerDoc && (
+      {releaseDoc && (
         <>
           <PageSection title="Release Instructions">
-            <MdDoc assetUrl={installerDoc} w="100%" maw="1000px" />
+            <MdDoc assetUrl={releaseDoc} w="100%" maw="1000px" />
           </PageSection>
         </>
       )}
       <PageSection title="Available Actions">
         <Group>
-          {release.installer.actions.map((action) => (
+          {release.manifest.actions.map((action) => (
             <ActionCard release={release} action={action} />
           ))}
         </Group>

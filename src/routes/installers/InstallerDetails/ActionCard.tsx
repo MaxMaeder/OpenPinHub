@@ -1,12 +1,15 @@
 import { Box, Button, Paper, Space, Stack, Text, Title } from "@mantine/core";
 import { InstallerAction, InstallerRelease } from "src/services/installer";
+import { Link } from "wouter";
 
 type ActionCardProps = {
   release: InstallerRelease;
   action: InstallerAction;
 };
 
-const ActionCard = ({ action }: ActionCardProps) => {
+const ActionCard = ({ release, action }: ActionCardProps) => {
+  const actionSlug = action.title.toLowerCase().replace(" ", "-");
+
   return (
     <Paper p="md" withBorder miw="300px">
       <Stack>
@@ -15,7 +18,9 @@ const ActionCard = ({ action }: ActionCardProps) => {
           <Text>{action.description}</Text>
         </Box>
         <Space />
-        <Button>Run Action</Button>
+        <Button component={Link} to={`/${release.id}/${actionSlug}`}>
+          Run Action
+        </Button>
       </Stack>
     </Paper>
   );
