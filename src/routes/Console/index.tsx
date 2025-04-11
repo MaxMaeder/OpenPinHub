@@ -12,14 +12,24 @@ const Console = () => {
   const isConn = connInfo != null;
 
   const terminalRef = useRef<TerminalHandle | null>(null);
+  const hasClearedRef = useRef(false);
 
-  // Subscribe to ADB output and write it to the Terminal.
   useEffect(() => {
+    if (!isConn) return;
+
     const unsubscribe = subscribeOutput((data: string) => {
       terminalRef.current?.write(data);
     });
-    return () => unsubscribe();
-  }, [subscribeOutput]);
+
+    if (!hasClearedRef.current) {
+      sendCommand("clear");
+      hasClearedRef.current = true;
+    }
+
+    return () => {
+      unsubscribe();
+    };
+  }, [isConn]);
 
   return (
     <PageLayout title="ADB Console" warnAdbDisconnected>
