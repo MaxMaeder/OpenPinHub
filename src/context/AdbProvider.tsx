@@ -39,6 +39,7 @@ export interface AdbContextType {
   subscribeOutput: (callback: (data: string) => void) => () => void;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
+  reboot: () => Promise<void>;
   sendCommand: (command: string) => Promise<void>;
   pullFile: (remotePath: string) => Promise<Blob>;
   pushFile: (blob: Blob, remotePath: string) => Promise<void>;
@@ -96,6 +97,14 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
     }
   };
 
+  const reboot = async () => {
+    if (!adbClient) {
+      throw new Error("Client is not connected");
+    }
+
+    return await adbClient.reboot();
+  };
+
   const sendCommand = async (command: string) => {
     if (!shell) {
       console.error("Shell is not connected");
@@ -114,7 +123,7 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
 
   const pullFile = async (remotePath: string): Promise<Blob> => {
     if (!adbClient) {
-      throw new Error("Shell is not connected");
+      throw new Error("Client is not connected");
     }
 
     return await adbClient.pull(remotePath);
@@ -122,7 +131,7 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
 
   const pushFile = async (blob: Blob, remotePath: string): Promise<void> => {
     if (!adbClient) {
-      throw new Error("Shell is not connected");
+      throw new Error("Client is not connected");
     }
 
     return await adbClient.push(
@@ -144,6 +153,7 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
         subscribeOutput,
         connect,
         disconnect,
+        reboot,
         sendCommand,
         pullFile,
         pushFile,

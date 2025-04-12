@@ -33,6 +33,11 @@ const MAX_PAYLOAD = 256 * 1024;
 
 const MACHINE_BANNER = 'host::\0';
 
+export enum RebootTarget {
+  Bootloader = 'bootloader',
+  Recovery = 'recovery'
+}
+
 export class AdbClient implements MessageListener {
   private messageChannel: MessageChannel;
   private messageQueue = new AsyncBlockingQueue<Message>();
@@ -105,6 +110,12 @@ export class AdbClient implements MessageListener {
 
   async disconnect(): Promise<void> {
     this.messageChannel.close();
+  }
+
+  async reboot(target?: RebootTarget): Promise<void> {
+    const cmd = target ? `reboot:${target}` : 'reboot:';
+    const stream = await Stream.open(this, cmd, this.options);
+    await stream.close();
   }
 
   async shell(command: string): Promise<string> {

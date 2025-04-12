@@ -7,6 +7,7 @@ import {
 } from "src/services/installer";
 import ActionCard from "./ActionCard";
 import PageSection from "src/components/PageSection";
+import RebootCard from "./utilities/RebootCard";
 
 type ReleaseDetailsProps = {
   installer: InstallerRepo;
@@ -31,6 +32,11 @@ const ReleaseDetails = ({ release }: ReleaseDetailsProps) => {
           {release.manifest.actions.map((action) => (
             <ActionCard key={action.title} release={release} action={action} />
           ))}
+        </Group>
+      </PageSection>
+      <PageSection title="Available Utilities">
+        <Group>
+          <RebootCard />
         </Group>
       </PageSection>
     </Stack>

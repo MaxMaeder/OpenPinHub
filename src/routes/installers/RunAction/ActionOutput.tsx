@@ -65,16 +65,20 @@ const ActionOutput = () => {
           </Accordion.Control>
 
           <Accordion.Panel>
-            <Paper
-              component="pre"
-              withBorder
-              p="md"
-              m={0}
-              bg="black"
-              ff="monospace"
-            >
-              {stage.output}
-            </Paper>
+            {stage.progress.status == "idle" ? (
+              <Text>Stage hasn't ran yet.</Text>
+            ) : (
+              <Paper
+                component="pre"
+                withBorder
+                p="md"
+                m={0}
+                bg="black"
+                ff="monospace"
+              >
+                {stage.output}
+              </Paper>
+            )}
           </Accordion.Panel>
         </Accordion.Item>
       ))}

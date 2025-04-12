@@ -98,9 +98,11 @@ export class ActionRunner {
 
   private createDownloadActionScriptStage() {
     this.createStage("Downloading action script", async () => {
-      this.actionAssets["action_script"] = await fetchGithubAsset(
-        getReleaseAssetUrl(this.release, this.action.script)!
-      );
+      const assetUrl = getReleaseAssetUrl(this.release, this.action.script);
+      if (!assetUrl)
+        throw new Error("Couldn't find action script download URL");
+
+      this.actionAssets["action_script"] = await fetchGithubAsset(assetUrl);
 
       return "Script fetched";
     });
@@ -108,10 +110,10 @@ export class ActionRunner {
 
   private createDownloadAssetStage(assetName: string) {
     this.createStage(`Downloading '${assetName}'`, async () => {
-      this.actionAssets[assetName] = await fetchGithubAsset(
-        getReleaseAssetUrl(this.release, assetName)!,
-        "blob"
-      );
+      const assetUrl = getReleaseAssetUrl(this.release, assetName);
+      if (!assetUrl) throw new Error("Couldn't find asset download URL");
+
+      this.actionAssets[assetName] = await fetchGithubAsset(assetUrl, "blob");
 
       return "Asset downloaded";
     });
