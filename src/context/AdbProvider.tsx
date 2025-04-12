@@ -39,7 +39,7 @@ export interface AdbContextType {
   subscribeOutput: (callback: (data: string) => void) => () => void;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  sendCommand: (command: string) => void;
+  sendCommand: (command: string) => Promise<void>;
   pullFile: (remotePath: string) => Promise<Blob>;
   pushFile: (blob: Blob, remotePath: string) => Promise<void>;
 }
@@ -96,12 +96,12 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
     }
   };
 
-  const sendCommand = (command: string) => {
+  const sendCommand = async (command: string) => {
     if (!shell) {
       console.error("Shell is not connected");
       return;
     }
-    shell.write(command + "\n");
+    await shell.write(command + "\n");
   };
 
   const subscribeOutput = (callback: (data: string) => void) => {

@@ -1,32 +1,45 @@
-import { ActionStage, ActionStatus } from "src/services/action";
+import { ActionProgress, ActionStage } from "src/services/action";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import merge from "lodash.merge";
 
 interface RunnerState {
-  status: ActionStatus;
+  actionName?: string;
+  progress: ActionProgress;
   stages: ActionStage[];
 
-  setStatus: (status: ActionStatus) => void;
-  addStage: (stage: ActionStage) => void;
-  updateStage: (id: string, patch: Partial<ActionStage>) => void;
+  setActionName: (name: string) => void;
+  updateProgress: (progress: Partial<ActionProgress>) => void;
+  addStage: (stage: Omit<ActionStage, "progress">) => void;
+  updateStage: (id: string, patch: DeepPartial<ActionStage>) => void;
   reset: () => void;
 }
 
+const initProgress: ActionProgress = {
+  status: "idle",
+};
+
 export const useRunnerStore = create<RunnerState>()(
   immer((set) => ({
-    status: "idle",
+    name: undefined,
+    progress: initProgress,
     stages: [],
 
-    setStatus: (status) =>
+    setActionName: (name) =>
       set((state) => {
-        state.status = status;
+        state.actionName = name;
+      }),
+
+    updateProgress: (progress) =>
+      set((state) => {
+        Object.assign(state.progress, progress);
       }),
 
     addStage: (stage) =>
       set((state) => {
         state.stages.push({
           ...stage,
-          timestamp: undefined,
+          progress: initProgress,
         });
       }),
 
@@ -34,20 +47,25 @@ export const useRunnerStore = create<RunnerState>()(
       set((state) => {
         const stage = state.stages.find((s) => s.id === id);
         if (stage) {
-          Object.assign(stage, patch);
+          merge(stage, patch);
         }
       }),
 
     reset: () =>
       set((state) => {
-        state.status = "idle";
+        state.actionName = undefined;
+        state.progress = initProgress;
         state.stages = [];
       }),
   }))
 );
 
-export const useRunnerStatus = () => {
-  return useRunnerStore((state) => state.status);
+export const useRunnerActionName = () => {
+  return useRunnerStore((state) => state.actionName);
+};
+
+export const useRunnerProgress = () => {
+  return useRunnerStore((state) => state.progress);
 };
 
 export const useRunnerStages = () => {

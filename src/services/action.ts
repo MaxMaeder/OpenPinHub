@@ -9,14 +9,19 @@ import { useRunnerStore } from "src/hooks/state/runnerStore";
 import { v4 as uuidv4 } from "uuid";
 import { ADB_INSTALL_TMP_DIR, ADB_SHELL_TIMEOUT } from "src/config/adbConfig";
 
+export interface ActionProgress {
+  status: ActionStatus;
+  startTime?: Date;
+  endTime?: Date;
+}
+
 export type ActionStatus = "idle" | "running" | "done" | "error";
 
 export interface ActionStage {
   id: string;
   command: string;
   output?: string;
-  timestamp?: Date;
-  status: ActionStatus;
+  progress: ActionProgress;
 }
 
 interface ExecutableStage {
@@ -50,27 +55,34 @@ export class ActionRunner {
     store.addStage({
       id: id,
       command,
-      status: "idle",
     });
 
     const execute = async () => {
       store.updateStage(id, {
-        status: "running",
-        timestamp: new Date(),
+        progress: {
+          startTime: new Date(),
+          status: "running",
+        },
       });
 
       try {
         const output = await toExecute();
 
         store.updateStage(id, {
-          status: "done",
+          progress: {
+            status: "done",
+            endTime: new Date(),
+          },
           output,
         });
 
         return true;
       } catch (e) {
         store.updateStage(id, {
-          status: "error",
+          progress: {
+            status: "error",
+            endTime: new Date(),
+          },
           output:
             e instanceof Error
               ? e.message
@@ -130,7 +142,7 @@ export class ActionRunner {
           let shellOutput = "";
           let cmdTimeout: NodeJS.Timeout | undefined;
 
-          this.adb.sendCommand(command);
+          this.adb.sendCommand(command); // Todo: probably catch error here
 
           const unsubscribeShell = this.adb.subscribeOutput((data: string) => {
             shellOutput += data;
@@ -220,7 +232,11 @@ export class ActionRunner {
 
   async start() {
     this.store.reset();
-    this.store.setStatus("running");
+    this.store.setActionName(this.action.title);
+    this.store.updateProgress({
+      status: "running",
+      startTime: new Date(),
+    });
 
     this.actionAssets = {};
     this.queuedStages = [];
@@ -235,6 +251,9 @@ export class ActionRunner {
       if (!success) didError = true;
     }
 
-    this.store.setStatus(didError ? "error" : "done");
+    this.store.updateProgress({
+      status: didError ? "error" : "done",
+      endTime: new Date(),
+    });
   }
 }

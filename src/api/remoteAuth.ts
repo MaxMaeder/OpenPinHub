@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const authClient = axios.create({
-  baseURL: "https://adb.openpinsigning.workers.dev",
+  baseURL: "https://signing.openpin.org",
 });
 
 interface SignedResponse {

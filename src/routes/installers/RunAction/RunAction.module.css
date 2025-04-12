@@ -1,0 +1,11 @@
+.outputSummary {
+  /* display: flex;
+  justify-content: space-between;
+  align-items: center; */
+
+  border: 1px solid var(--mantine-color-dark-4);
+  background: var(--mantine-color-dark-6);
+  border-radius: var(--mantine-radius-default) var(--mantine-radius-default) 0 0;
+  border-bottom: 0;
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+}

@@ -29,7 +29,7 @@ const ReleaseDetails = ({ release }: ReleaseDetailsProps) => {
       <PageSection title="Available Actions">
         <Group>
           {release.manifest.actions.map((action) => (
-            <ActionCard release={release} action={action} />
+            <ActionCard key={action.title} release={release} action={action} />
           ))}
         </Group>
       </PageSection>

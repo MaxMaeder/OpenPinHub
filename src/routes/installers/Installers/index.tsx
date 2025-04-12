@@ -9,8 +9,11 @@ const Installers = () => {
   return (
     <PageLayout title="Installers" warnAdbDisconnected>
       <SimpleGrid cols={{ base: 1, xl: 2 }}>
-        {installers.map((installer) => {
-          return <InstallerCard installerQuery={installer} />;
+        {installers.map((installer, i) => {
+          {
+            /* TODO: better key */
+          }
+          return <InstallerCard key={i} installerQuery={installer} />;
         })}
       </SimpleGrid>
     </PageLayout>

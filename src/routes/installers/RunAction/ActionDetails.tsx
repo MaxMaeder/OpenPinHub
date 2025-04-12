@@ -2,8 +2,11 @@ import { Button, Paper, Space, Stack, Text } from "@mantine/core";
 import MdDoc from "src/components/MdDoc";
 import PageSection from "src/components/PageSection";
 import { useAdb } from "src/context/AdbProvider";
-import { useRunnerActions, useRunnerStatus } from "src/hooks/state/runnerStore";
-import { ActionRunner, ActionStatus } from "src/services/action";
+import {
+  useRunnerActions,
+  useRunnerProgress,
+} from "src/hooks/state/runnerStore";
+import { ActionProgress, ActionRunner } from "src/services/action";
 import {
   getReleaseAssetUrl,
   InstallerAction,
@@ -18,9 +21,9 @@ type ActionDetailsProps = {
 };
 
 const getRunnerDetails = (
-  status: ActionStatus
+  progress: ActionProgress
 ): { text: string; loading: boolean } => {
-  switch (status) {
+  switch (progress.status) {
     case "idle":
       return { text: "Run", loading: false };
     case "running":
@@ -36,8 +39,8 @@ const ActionDetails = ({ release, action }: ActionDetailsProps) => {
   const adb = useAdb();
   const isConnected = !!adb.connInfo;
 
-  const runnerStatus = useRunnerStatus();
-  const btnDetails = getRunnerDetails(runnerStatus);
+  const runnerProgress = useRunnerProgress();
+  const btnDetails = getRunnerDetails(runnerProgress);
 
   const { reset } = useRunnerActions();
   useEffect(() => {
