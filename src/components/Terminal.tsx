@@ -59,26 +59,27 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(
         window.addEventListener("resize", handleResize);
 
         // Listen for key events
-        terminal.onKey(({ domEvent }) => {
-          const ev = domEvent;
-          const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
-          if (ev.key === "Backspace") {
-            if (inputBuffer.current.length > 0) {
-              inputBuffer.current = inputBuffer.current.slice(0, -1);
-              terminal.write("\b \b");
+        terminal.onData((data) => {
+          for (const char of data) {
+            if (char === "\r") {
+              // Erase user input before sending the command
+              const len = inputBuffer.current.length;
+              for (let i = 0; i < len; i++) {
+                terminal.write("\b \b");
+              }
+              const command = inputBuffer.current;
+              inputBuffer.current = "";
+              onCommand(command);
+            } else if (char === "\x7F") {
+              // Backspace
+              if (inputBuffer.current.length > 0) {
+                inputBuffer.current = inputBuffer.current.slice(0, -1);
+                terminal.write("\b \b");
+              }
+            } else {
+              inputBuffer.current += char;
+              terminal.write(char);
             }
-          } else if (ev.key === "Enter") {
-            // Erase only the user-typed content.
-            const len = inputBuffer.current.length;
-            for (let i = 0; i < len; i++) {
-              terminal.write("\b \b");
-            }
-            const command = inputBuffer.current;
-            onCommand(command);
-            inputBuffer.current = "";
-          } else if (printable && ev.key.length === 1) {
-            inputBuffer.current += ev.key;
-            terminal.write(ev.key);
           }
         });
 
