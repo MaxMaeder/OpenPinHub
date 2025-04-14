@@ -1,7 +1,7 @@
 import { Button } from "@mantine/core";
 import BaseCard from "../BaseCard";
 import { useCallback } from "react";
-import { openConfirmModal } from "src/modals";
+import { openConfirmRebootModal } from "src/modals";
 import { useAdb } from "src/context/AdbProvider";
 
 const RebootCard = () => {
@@ -9,10 +9,7 @@ const RebootCard = () => {
   const isConn = connInfo != null;
 
   const handleReboot = useCallback(async () => {
-    await openConfirmModal(
-      "Confirm Reboot",
-      "Are you sure you want to reboot your Pin now?"
-    );
+    await openConfirmRebootModal();
     reboot();
   }, []);
 

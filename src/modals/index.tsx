@@ -13,6 +13,12 @@ export const openConfirmModal = (title: string, message: string) => {
   });
 };
 
+export const openConfirmRebootModal = () =>
+  openConfirmModal(
+    "Confirm Reboot",
+    "Are you sure you want to reboot your Pin now?"
+  );
+
 export const openDownloadModal = () => {
   modals.openContextModal({
     modal: "fileDownload",

@@ -1,14 +1,18 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import Terminal, { TerminalHandle } from "../../components/Terminal";
 import { useAdb } from "../../context/AdbProvider";
 import { Button, Group, Paper, Stack } from "@mantine/core";
 import PageLayout from "../../layouts/PageLayout";
-import { openDownloadModal, openUploadModal } from "../../modals";
-import { IconDownload, IconUpload } from "@tabler/icons-react";
+import {
+  openConfirmRebootModal,
+  openDownloadModal,
+  openUploadModal,
+} from "../../modals";
+import { IconDownload, IconPower, IconUpload } from "@tabler/icons-react";
 import PageSection from "src/components/PageSection";
 
 const Console = () => {
-  const { connInfo, sendCommand, subscribeOutput } = useAdb();
+  const { connInfo, sendCommand, subscribeOutput, reboot } = useAdb();
   const isConn = connInfo != null;
 
   const terminalRef = useRef<TerminalHandle | null>(null);
@@ -31,6 +35,11 @@ const Console = () => {
     };
   }, [isConn]);
 
+  const handleReboot = useCallback(async () => {
+    await openConfirmRebootModal();
+    reboot();
+  }, []);
+
   return (
     <PageLayout title="ADB Console" warnAdbDisconnected>
       <Stack>
@@ -42,7 +51,7 @@ const Console = () => {
             }}
           />
         </Paper>
-        <PageSection title="Transfer Files">
+        <PageSection title="Tools">
           <Group>
             <Button
               onClick={openDownloadModal}
@@ -57,6 +66,13 @@ const Console = () => {
               rightSection={<IconUpload size={14} />}
             >
               Upload File
+            </Button>
+            <Button
+              onClick={handleReboot}
+              disabled={!isConn}
+              rightSection={<IconPower size={14} />}
+            >
+              Reboot Pin
             </Button>
           </Group>
         </PageSection>
