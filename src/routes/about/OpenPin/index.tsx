@@ -1,10 +1,13 @@
-import { Text } from "@mantine/core";
+import Content from "./Content.mdx";
 import PageLayout from "../../../layouts/PageLayout";
+import { TypographyStylesProvider } from "@mantine/core";
 
 const OpenPin = () => {
   return (
     <PageLayout title="OpenPin">
-      <Text>Coming soon</Text>
+      <TypographyStylesProvider>
+        <Content />
+      </TypographyStylesProvider>
     </PageLayout>
   );
 };
