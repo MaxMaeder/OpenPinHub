@@ -21,19 +21,33 @@ export const remoteAuthHandler = async (
 
   const token = response.data.buffer;
 
-  const signed = await remoteAuth.getSignedToken(token);
+  const { token: signed, pubKey } = await remoteAuth.getSignedToken(token);
 
-  const signatureMessage = Message.authSignature(
+  // Send signed token
+  const sigMsg = Message.authSignature(
     new DataView(signed),
     client.options.useChecksum
   );
-  await client.sendMessage(signatureMessage);
+  await client.sendMessage(sigMsg);
 
-  const signatureResponse = await client.awaitMessage();
-  if (signatureResponse.header.cmd === "CNXN") {
-    return signatureResponse;
+  // Wait for next step
+  let next = await client.awaitMessage();
+  if (next.header.cmd === "AUTH" && next.header.arg0 === 1) {
+    // Signature not recognized, send public key
+    const keyMsg = Message.authPublicKey(
+      new DataView(pubKey),
+      client.options.useChecksum
+    );
+    await client.sendMessage(keyMsg);
+    // And wait one more time for the device to prompt user
+    next = await client.awaitMessage();
+  }
+
+  // Now we should get CNXN
+  if (next.header.cmd === "CNXN") {
+    return next;
   } else {
-    console.error("Authentication failed:", signatureResponse);
-    throw Error("Authentication failed");
+    console.error("Authentication failed:", next);
+    throw new Error("Authentication failed");
   }
 };
