@@ -36,7 +36,8 @@ const Console = () => {
   }, [isConn]);
 
   const handleReboot = useCallback(async () => {
-    await openConfirmRebootModal();
+    const { result } = openConfirmRebootModal();
+    await result;
     reboot();
   }, []);
 

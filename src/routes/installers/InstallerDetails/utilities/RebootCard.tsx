@@ -9,7 +9,8 @@ const RebootCard = () => {
   const isConn = connInfo != null;
 
   const handleReboot = useCallback(async () => {
-    await openConfirmRebootModal();
+    const { result } = openConfirmRebootModal();
+    await result;
     reboot();
   }, []);
 

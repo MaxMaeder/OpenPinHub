@@ -24,20 +24,8 @@ const decodeToken = (base64: string): ArrayBuffer => {
   return bytes.buffer; // return the underlying ArrayBuffer
 };
 
-function parseOpenSshPubKey(line: string): ArrayBuffer {
-  // 1) strip whitespace & trailing newline
-  const trimmed = line.trim();
-  // 2) split off the comment
-  const [b64] = trimmed.split(" ");
-  // 3) atob() ➔ binary string ➔ Uint8Array
-  const binStr = atob(b64!);
-  const u8 = new Uint8Array(binStr.length);
-  for (let i = 0; i < binStr.length; i++) {
-    u8[i] = binStr.charCodeAt(i);
-  }
-  // 4) wrap in DataView
-  return u8.buffer;
-}
+const parsePubKey = (line: string): ArrayBuffer =>
+  decodeToken(line.trim().split(" ")[0]!);
 
 export const getSignedToken = async (
   payload: ArrayBufferLike
@@ -49,6 +37,6 @@ export const getSignedToken = async (
 
   return {
     token: decodeToken(data.token),
-    pubKey: parseOpenSshPubKey(data.public_key),
+    pubKey: parsePubKey(data.public_key),
   };
 };

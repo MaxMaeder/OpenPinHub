@@ -1,6 +1,8 @@
 import { AdbClient } from "../libs/wadb/AdbClient";
 import { Message } from "../libs/wadb/message";
 import * as remoteAuth from "../api/remoteAuth";
+import { openAlertModal } from "src/modals";
+import { modals } from "@mantine/modals";
 
 export const remoteAuthHandler = async (
   client: AdbClient,
@@ -33,14 +35,21 @@ export const remoteAuthHandler = async (
   // Wait for next step
   let next = await client.awaitMessage();
   if (next.header.cmd === "AUTH" && next.header.arg0 === 1) {
+    const { modalId } = openAlertModal(
+      "Confirmation Required",
+      "On the laser ink display, confirm you want to grant access to this computer."
+    );
+
     // Signature not recognized, send public key
     const keyMsg = Message.authPublicKey(
       new DataView(pubKey),
       client.options.useChecksum
     );
     await client.sendMessage(keyMsg);
+
     // And wait one more time for the device to prompt user
     next = await client.awaitMessage();
+    modals.close(modalId);
   }
 
   // Now we should get CNXN
