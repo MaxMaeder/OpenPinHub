@@ -61,12 +61,42 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
 
   const isSupported = "usb" in navigator;
 
-  // Use an event emitter for output
+  // Use an event emitter for shell output
   const outputEmitter = useRef(new EventEmitter());
+
+  // Keep track of handler for USB disconnect events
+  const discHandlerRef = useRef<((e: USBConnectionEvent) => void) | null>(null);
+
+  const setDisconnected = () => {
+    setShell(null);
+    setAdbClient(null);
+    setTransport(null);
+    setConnInfo(null);
+  };
 
   const connect = async () => {
     try {
       const t = await WebUsbTransport.open(options);
+
+      // Add USB disconnect listener
+      const handleUSBDisconnect = (evt: USBConnectionEvent) => {
+        if (evt.device === t.device) {
+          console.warn("USB device unplugged, setting disconnected");
+          setDisconnected();
+
+          // Remove listener so it doesn’t fire again
+          if (discHandlerRef.current) {
+            navigator.usb.removeEventListener(
+              "disconnect",
+              discHandlerRef.current
+            );
+            discHandlerRef.current = null;
+          }
+        }
+      };
+      navigator.usb.addEventListener("disconnect", handleUSBDisconnect);
+      discHandlerRef.current = handleUSBDisconnect;
+
       const client = new AdbClient(t, options, new MyKeyStore());
 
       const connInfo = await client.connect();
@@ -80,6 +110,7 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
       setShell(shellInstance);
       setConnInfo(connInfo);
     } catch (error) {
+      // TODO: cleanup here, right now will have to reload page as USB transport not closes
       console.error("Connection Failed:", error);
     }
   };
@@ -88,10 +119,14 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
     try {
       if (shell) await shell.close();
       if (transport) await transport.close();
-      setShell(null);
-      setAdbClient(null);
-      setTransport(null);
-      setConnInfo(null);
+
+      // Remove USB disconnect listener if present
+      if (discHandlerRef.current) {
+        navigator.usb.removeEventListener("disconnect", discHandlerRef.current);
+        discHandlerRef.current = null;
+      }
+
+      setDisconnected();
     } catch (error) {
       console.error("Error closing the connection:", error);
     }
