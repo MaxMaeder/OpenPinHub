@@ -10,6 +10,7 @@ import {
   IconUsersGroup,
 } from "@tabler/icons-react";
 import NavLink from "./NavLink";
+import Credit from "./Credit";
 
 const Navbar = () => {
   return (
@@ -17,7 +18,7 @@ const Navbar = () => {
       <AppShell.Section mb="md">
         <ConnDetails />
       </AppShell.Section>
-      <AppShell.Section>
+      <AppShell.Section grow>
         <Stack gap={0}>
           <NavLink label="About" Icon={IconBook2} to="/about" startOpen>
             <NavLink
@@ -45,6 +46,9 @@ const Navbar = () => {
           <NavLink label="Console" Icon={IconTerminal} to="/console" />
           <NavLink label="Settings" Icon={IconSettings} to="/settings" />
         </Stack>
+      </AppShell.Section>
+      <AppShell.Section>
+        <Credit />
       </AppShell.Section>
     </AppShell.Navbar>
   );
