@@ -16,16 +16,20 @@ const InstallerCard = ({ installerQuery }: InstallerCardProps) => (
     <Group justify="space-between" align="center" h="100%">
       <QueryStateHandler query={installerQuery}>
         {(installer) => (
-          <>
+          <Group wrap="nowrap">
             <Box h="100%">
               <Title order={3}>{installer.name}</Title>
               <Text>{installer.description}</Text>
               <Text>{getReleasesText(installer.releases)}</Text>
             </Box>
-            <Button component={Link} to={`/${installer.id}`}>
+            <Button
+              component={Link}
+              to={`/${installer.id}`}
+              style={{ flexShrink: 0 }}
+            >
               Use
             </Button>
-          </>
+          </Group>
         )}
       </QueryStateHandler>
     </Group>
