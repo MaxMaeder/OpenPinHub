@@ -3,14 +3,26 @@ import { IconAlertTriangleFilled } from "@tabler/icons-react";
 import { ReactNode } from "react";
 import { useAdb } from "../../context/AdbProvider";
 
-type PageLayoutProps = {
-  title: string;
+interface BaseProps {
   warnAdbDisconnected?: boolean;
   children: ReactNode;
-};
+}
+
+interface NoTitleProps extends BaseProps {
+  hideTitle: true;
+  title?: string;
+}
+
+interface WithTitleProps extends BaseProps {
+  hideTitle?: false;
+  title: string;
+}
+
+type PageLayoutProps = NoTitleProps | WithTitleProps;
 
 const PageLayout = ({
   title,
+  hideTitle,
   warnAdbDisconnected,
   children,
 }: PageLayoutProps) => {
@@ -19,19 +31,23 @@ const PageLayout = ({
 
   return (
     <Flex direction="column" flex={1}>
-      <Group mb="md">
-        <Title order={1} size="h2">
-          {title}
-        </Title>
-        {warnAdbDisconnected && !isConn && (
-          <Badge
-            color="red"
-            leftSection={<IconAlertTriangleFilled size={12} />}
-          >
-            Pin disconnected
-          </Badge>
-        )}
-      </Group>
+      {!hideTitle && (
+        <Group mb="md">
+          {title && (
+            <Title order={1} size="h2">
+              {title}
+            </Title>
+          )}
+          {warnAdbDisconnected && !isConn && (
+            <Badge
+              color="red"
+              leftSection={<IconAlertTriangleFilled size={12} />}
+            >
+              Pin disconnected
+            </Badge>
+          )}
+        </Group>
+      )}
 
       {children}
     </Flex>

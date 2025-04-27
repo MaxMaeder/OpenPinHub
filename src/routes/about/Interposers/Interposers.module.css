@@ -1,0 +1,12 @@
+.cardsContainer {
+  display: flex;
+  width: 100%;
+  gap: var(--mantine-spacing-md);
+  align-items: stretch;
+  flex-direction: row;
+}
+@media (max-width: $interposers-bp-mobile) {
+  .cardsContainer {
+    flex-direction: column;
+  }
+}
