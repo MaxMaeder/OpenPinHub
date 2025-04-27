@@ -8,7 +8,7 @@ import Card from "./Card";
 const Interposers = () => {
   return (
     <PageLayout hideTitle>
-      <Stack maw="80rem" m="0 auto">
+      <Stack className={classes.stack}>
         <Hero />
 
         <Title

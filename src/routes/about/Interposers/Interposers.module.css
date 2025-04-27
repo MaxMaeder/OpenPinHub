@@ -1,3 +1,7 @@
+.stack {
+  max-width: 80rem;
+  margin: var(--mantine-spacing-md) auto;
+}
 .cardsContainer {
   display: flex;
   width: 100%;
@@ -6,6 +10,9 @@
   flex-direction: row;
 }
 @media (max-width: $interposers-bp-mobile) {
+  .stack {
+    margin: 0;
+  }
   .cardsContainer {
     flex-direction: column;
   }
