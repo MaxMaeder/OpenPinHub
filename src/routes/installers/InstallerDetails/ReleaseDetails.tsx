@@ -28,14 +28,14 @@ const ReleaseDetails = ({ release }: ReleaseDetailsProps) => {
         </>
       )}
       <PageSection title="Available Actions">
-        <Group>
+        <Group w="100%">
           {release.manifest.actions.map((action) => (
             <ActionCard key={action.title} release={release} action={action} />
           ))}
         </Group>
       </PageSection>
       <PageSection title="Available Utilities">
-        <Group>
+        <Group w="100%">
           <RebootCard />
         </Group>
       </PageSection>

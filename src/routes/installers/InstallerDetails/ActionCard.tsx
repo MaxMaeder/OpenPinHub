@@ -1,5 +1,9 @@
 import { Button } from "@mantine/core";
-import { InstallerAction, InstallerRelease } from "src/services/installer";
+import {
+  getActionSlug,
+  InstallerAction,
+  InstallerRelease,
+} from "src/services/installer";
 import { Link } from "wouter";
 import BaseCard from "./BaseCard";
 
@@ -9,7 +13,7 @@ type ActionCardProps = {
 };
 
 const ActionCard = ({ release, action }: ActionCardProps) => {
-  const actionSlug = action.title.toLowerCase().replace(" ", "-");
+  const actionSlug = getActionSlug(action);
 
   return (
     <BaseCard title={action.title} description={action.description}>

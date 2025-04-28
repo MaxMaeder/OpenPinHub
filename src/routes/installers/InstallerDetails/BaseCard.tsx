@@ -8,7 +8,7 @@ type BaseCardProps = {
 };
 
 const BaseCard = ({ title, description, children }: BaseCardProps) => (
-  <Paper p="md" withBorder miw="300px">
+  <Paper p="md" withBorder miw={{ base: "100%", md: "300px" }}>
     <Stack>
       <Box>
         <Title order={3}>{title}</Title>

@@ -16,7 +16,7 @@ const InstallerCard = ({ installerQuery }: InstallerCardProps) => (
     <Group justify="space-between" align="center" h="100%">
       <QueryStateHandler query={installerQuery}>
         {(installer) => (
-          <Group wrap="nowrap" w="100%">
+          <Group wrap="nowrap" justify="space-between" w="100%">
             <Box h="100%">
               <Title order={3}>{installer.name}</Title>
               <Text>{installer.description}</Text>
