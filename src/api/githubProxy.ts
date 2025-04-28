@@ -1,7 +1,7 @@
 import axios, { ResponseType } from "axios";
 
 const githubClient = axios.create({
-  baseURL: "https://assetproxy.openpin.org/",
+  baseURL: "https://proxy.openpin.org/",
 });
 
 export const fetchGithubAsset = async (
