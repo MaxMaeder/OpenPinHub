@@ -1,4 +1,4 @@
-import { Paper, Box, Title, Text, List, Button } from "@mantine/core";
+import { Paper, Box, Title, Text, List, Button, Badge } from "@mantine/core";
 
 import classes from "./Hero.module.css";
 
@@ -33,7 +33,18 @@ const Hero = () => (
           Buy Now
         </Button>
       </Box>
-      <Box component="img" src="/interposer.png" className={classes.image} />
+      <Box className={classes.imageContainer}>
+        <Box component="img" src="/interposer.png" className={classes.image} />
+        <Badge
+          color="white"
+          c="black"
+          radius="sm"
+          size="lg"
+          className={classes.badge}
+        >
+          V2.0
+        </Badge>
+      </Box>
     </Box>
   </Paper>
 );

@@ -36,21 +36,37 @@
   width: 40%;
   max-width: 40rem;
 }
-.image {
+.imageContainer {
+  height: 100%;
   width: 40%;
   min-width: 0;
   max-width: 40rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.image {
+  width: 100%;
   height: auto;
   aspect-ratio: 5/4;
   object-fit: cover;
+}
+.badge {
+  position: absolute;
+  top: var(--mantine-spacing-md);
+  right: 0;
 }
 @media (max-width: $interposers-bp-mobile) {
   .textContainer {
     width: 100%;
   }
-  .image {
-    width: 80%;
+  .imageContainer {
+    width: 100%;
     max-width: unset;
     height: auto;
+  }
+  .image {
+    width: 80%;
   }
 }
