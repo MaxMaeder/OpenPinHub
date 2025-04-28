@@ -1,4 +1,5 @@
 .stack {
+  width: 100%;
   max-width: 80rem;
   margin: var(--mantine-spacing-md) auto;
 }
