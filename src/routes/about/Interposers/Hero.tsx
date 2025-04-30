@@ -33,7 +33,7 @@ const Hero = () => {
           </Text>
           <Text fw="bold">Features</Text>
           <List mb="xl">
-            <List.Item>High-tolerance, extremely durable design</List.Item>
+            <List.Item>High-precision, extremely durable design</List.Item>
             <List.Item>USB C connector (not pictured)</List.Item>
             <List.Item>Premium braided cable included</List.Item>
           </List>
