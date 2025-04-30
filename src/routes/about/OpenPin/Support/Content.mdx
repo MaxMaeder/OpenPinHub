@@ -1,0 +1,72 @@
+import { Anchor } from "@mantine/core";
+import { Link } from "wouter";
+
+# OpenPin Support
+
+For help with OpenPin, visit our <Link href="../../community">Community</Link> page.
+
+## Common Issues & Solutions
+
+### Connection Issues
+
+- **Ai Pin doesn't show up in USB popup**
+  This typically indicates an improper connection between the Ai Pin and interposer. Ensure your Ai Pin has sufficient battery charge, then verify the positioning in the interposer. For optimal contact, gently adjust the Ai Pin's position within the interposer to align the connection points properly. It's *possible* that your interposer, is malfunctioning.
+
+- **Ai Pin fails to connect**
+  Check for a popup on the laser ink display confirming you want to let your computer connect. If this appears, click accept.
+
+- **Other connection problems**
+  Ensure your Ai Pin is properly seated in the interposer, check that the interposer is properly connected to your computer, and make sure your Ai Pin has sufficient battery.
+
+---
+
+### Installation Problems
+
+> **If installation fails:**
+>
+> 1. Try rebooting both your computer and Ai Pin
+> 2. Ensure you have a stable internet connection during the installation process
+> 3. Make sure you're using Google Chrome (other browsers may not work properly)
+
+---
+
+### Relaunching OpenPin
+
+If Ai Pin ever runs fully out of battery, or something goes very wrong, you will need to relaunch OpenPin.
+
+#### How to Relaunch:
+
+1. Go to Installers > OpenPin > Relaunch OpenPin > Run Action
+2. Click 'Run' and confirm the relaunch was successful
+
+---
+
+### Connecting to Wifi Networks while using OpenPin
+
+The Ai Pin requires an active WiFi connection for many features to work properly. However, the voice interface doesn't support entering WiFi passwords, so you'll need to use a QR code method instead.
+
+#### Generating a WiFi QR Code:
+
+1. Visit the [Ai Pin WiFi QR Code Generator](https://agg23.github.io/ai-pin-wifi-qr-generator/)
+2. Enter your WiFi network name (SSID)
+3. Select your security type (typically WPA)
+4. Enter your WiFi password
+5. Check "Hidden SSID" if your network is hidden
+6. Click "Generate QR Code"
+
+#### Connecting Your Ai Pin to WiFi:
+
+1. On your Ai Pin, tap to wake it then hold up your hand for the laser ink display
+2. Navigate to Settings > Other Settings > WiFi
+3. Select "Connect to WiFi" or "Scan QR Code"
+4. Point your Ai Pin camera at the generated QR code
+5. The Ai Pin will scan the code and automatically connect to your network
+
+---
+
+## Getting More Help
+
+If you're still experiencing issues:
+
+- Join our <Link href="../../community">Community Discord</Link> for real-time assistance
+- Report bugs by creating an issue on our [GitHub repository](https://github.com/MaxMaeder/OpenPin)
