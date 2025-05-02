@@ -50,7 +50,7 @@ const Hero = () => {
         <Box className={classes.imageContainer}>
           <Box
             component="img"
-            src="/interposer.png"
+            src="/interposer-v2.png"
             className={classes.image}
           />
           <Badge
