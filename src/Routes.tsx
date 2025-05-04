@@ -1,5 +1,4 @@
 import OpenPin from "./routes/about/OpenPin";
-import Introduction from "./routes/about/OpenPin/Introduction";
 import Installation from "./routes/about/OpenPin/Installation";
 import Features from "./routes/about/OpenPin/Features";
 import Support from "./routes/about/OpenPin/Support";
@@ -22,9 +21,6 @@ const Routes = () => (
       <Switch>
         <Route path="/openpin" nest>
           <Switch>
-            <Route path="introduction">
-              <Introduction />
-            </Route>
             <Route path="installation">
               <Installation />
             </Route>
