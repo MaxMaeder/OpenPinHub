@@ -1,0 +1,14 @@
+/* shared card tweaks */
+.card {
+  min-height: 12rem; /* fixed minimum on mobile, grows with content */
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: $mantine-breakpoint-md) {
+  /* Mantine’s default md breakpoint (≈ 768 px) */
+  /* make the Features card as tall as the two cards in the other column */
+  .featuresCard {
+    grid-row: span 2;
+  }
+}

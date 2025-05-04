@@ -32,16 +32,13 @@ const PageLayout = ({
   return (
     <Flex direction="column" flex={1}>
       {!hideTitle && (
-        <Group mb="md">
-          {title && (
-            <Title order={1} size="h2">
-              {title}
-            </Title>
-          )}
+        <Group mb="md" align="center">
+          {title && <Title order={1}>{title}</Title>}
           {warnAdbDisconnected && !isConn && (
             <Badge
               color="red"
               leftSection={<IconAlertTriangleFilled size={12} />}
+              mt="5px"
             >
               Pin disconnected
             </Badge>
