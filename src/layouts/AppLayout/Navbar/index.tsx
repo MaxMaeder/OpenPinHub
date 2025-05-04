@@ -25,7 +25,7 @@ const Navbar = () => {
               label="OpenPin"
               Icon={IconTriangleSquareCircle}
               to="/about/openpin"
-              match="/about/*?"
+              match="/about/openpin/*?"
             />
             <NavLink
               label="Interposers"
