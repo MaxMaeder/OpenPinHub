@@ -26,4 +26,4 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
       - name: Run Copybara
-        run: $COPYBARA copybara/public_to_private.sky public_to_private
+        run: $COPYBARA migrate copybara/public_to_private.sky public_to_private
