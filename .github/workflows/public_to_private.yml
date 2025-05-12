@@ -30,4 +30,4 @@ jobs:
           git config --global user.name  "copybara-bot"
           git config --global user.email "copybara-bot@users.noreply.github.com"
       - name: Run Copybara
-        run: $COPYBARA migrate --init-history --force copybara/copy.bara.sky public_to_private
+        run: $COPYBARA migrate copybara/copy.bara.sky public_to_private
