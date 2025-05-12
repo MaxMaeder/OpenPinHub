@@ -1,0 +1,14 @@
+core.workflow(
+    name = "public_to_private",
+    origin = git.origin(
+        url = "git@github.com:<org>/<proj>.git",
+        ref = "main",
+    ),
+    destination = git.destination(
+        url = "git@github.com:<you>/<proj>-internal.git",
+        push = "refs/heads/public-sync",
+    ),
+    authoring = authoring.pass_thru("Public Contributor <noreply@github.com>"),
+    origin_files = glob(["**"]),
+    destination_files = glob(["**"]),
+)

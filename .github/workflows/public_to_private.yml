@@ -1,0 +1,24 @@
+name: Mirror to Private
+on:
+  push:
+    branches: [main] # fires after you click “Merge PR”
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Copybara
+        run: |
+          curl -sSL -o copybara.jar \
+            https://github.com/google/copybara/releases/latest/download/copybara_deploy.jar
+          echo "COPYBARA=java -jar $PWD/copybara.jar" >> $GITHUB_ENV
+      - name: SSH for private push
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf "%s\n" "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Run Copybara
+        run: $COPYBARA copybara/public_to_private.sky public_to_private
