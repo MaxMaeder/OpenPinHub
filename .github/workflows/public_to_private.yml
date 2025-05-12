@@ -1,7 +1,7 @@
 name: Mirror to Private
 on:
   push:
-    branches: [main] # fires after you click “Merge PR”
+    branches: [master]
 jobs:
   mirror:
     runs-on: ubuntu-latest
