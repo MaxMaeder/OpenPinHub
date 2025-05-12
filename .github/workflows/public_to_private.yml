@@ -25,5 +25,9 @@ jobs:
           printf "%s\n" "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Set Git identity
+        run: |
+          git config --global user.name  "copybara-bot"
+          git config --global user.email "copybara-bot@users.noreply.github.com"
       - name: Run Copybara
         run: $COPYBARA migrate --init-history --force copybara/copy.bara.sky public_to_private
