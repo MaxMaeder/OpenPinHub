@@ -22,5 +22,4 @@ core.workflow(
         ["**"],
         exclude = common_excludes,
     ),
-    metadata = metadata.REUSE_ORIGIN,
 )
