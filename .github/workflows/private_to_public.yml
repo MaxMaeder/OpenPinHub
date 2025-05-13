@@ -1,4 +1,4 @@
-name: Mirror to Private
+name: Mirror to Public
 on:
   push:
     branches: [master]
@@ -17,7 +17,7 @@ jobs:
           curl -sSL -o copybara.jar \
             https://github.com/google/copybara/releases/latest/download/copybara_deploy.jar
           echo "COPYBARA=java -jar $PWD/copybara.jar" >> $GITHUB_ENV
-      - name: SSH for private push
+      - name: SSH for public push
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
@@ -29,5 +29,14 @@ jobs:
         run: |
           git config --global user.name  "copybara-bot"
           git config --global user.email "copybara-bot@users.noreply.github.com"
+      - name: Debug SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no -T git@github.com || true
+      - name: Inject HTTPS credentials for private clone
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global credential.helper store
+          printf "https://x-access-token:%s@github.com\n" "$TOKEN" > ~/.git-credentials
       - name: Run Copybara
-        run: $COPYBARA migrate copybara/copy.bara.sky public_to_private
+        run: $COPYBARA migrate --init-history copybara/copy.bara.sky private_to_public

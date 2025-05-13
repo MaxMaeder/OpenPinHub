@@ -17,7 +17,9 @@ const demoteHeadings: Plugin = () => {
 };
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  base: mode === "electron" ? "./" : "/",
+
   plugins: [
     {
       enforce: "pre",
@@ -32,4 +34,16 @@ export default defineConfig({
       src: path.resolve(__dirname, "./src"),
     },
   },
-});
+}));
+
+// export default defineConfig(({ mode }) => ({
+//   plugins: [react()],
+
+//   // 👇 absolute for web, relative (“./”) for Electron
+//   base: mode === 'electron' ? './' : '/',
+
+//   build: {
+//     outDir: 'dist',          // keep same folder
+//     assetsDir: 'assets'
+//   }
+// }));

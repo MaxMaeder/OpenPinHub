@@ -1,14 +1,14 @@
 core.workflow(
-    name = "public_to_private",
+    name = "private_to_public",
     origin = git.origin(
-        url = "git@github.com:openaipin/OpenPinHub.git",
+        url = "https://github.com/maxmaeder/OpenPinHub-Secret.git",
         ref = "master",
     ),
     destination = git.destination(
-        url = "git@github.com:maxmaeder/OpenPinHub-Secret.git",
-        push = "refs/heads/public-sync",
+        url = "git@github.com:openaipin/OpenPinHub.git",
+        push = "refs/heads/master",
     ),
-    authoring = authoring.pass_thru("Public Contributor <noreply@github.com>"),
-    origin_files = glob(["**"]),
+    authoring = authoring.pass_thru("Copybara <noreply@github.com>"),
+    origin_files = glob(["**"], exclude = ["desktop/**"]),
     destination_files = glob(["**"]),
 )

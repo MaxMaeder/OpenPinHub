@@ -58,6 +58,13 @@ export const openConfirmModal = (
   return { modalId, result };
 };
 
+export const openUsbSelectorModel = () =>
+  modals.openContextModal({
+    modal: "usbSelector",
+    title: "Select USB",
+    innerProps: {},
+  });
+
 export const openConfirmRebootModal = () =>
   openConfirmModal(
     "Confirm Reboot",

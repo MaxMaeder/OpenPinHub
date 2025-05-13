@@ -8,6 +8,7 @@ import { remoteAuthHandler } from "../services/adbAuth";
 import { EventEmitter } from "events";
 import { AdbConnectionInformation } from "../libs/wadb/AdbConnectionInformation";
 import { ADB_PUSH_CHUNK_SIZE, ADB_PUSH_FILE_PERMS } from "../config/adbConfig";
+import { openUsbSelectorModel } from "src/modals";
 
 // A simple KeyStore implementation
 class MyKeyStore implements KeyStore {
@@ -76,6 +77,7 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
 
   const connect = async () => {
     try {
+      openUsbSelectorModel();
       const t = await WebUsbTransport.open(options);
 
       // Add USB disconnect listener

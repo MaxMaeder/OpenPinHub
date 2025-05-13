@@ -10,6 +10,7 @@ import FileDownloadModal from "./modals/FileTransferModals/FileDownloadModal";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./api/query";
 import Routes from "./Routes";
+import { UsbSelectorModal } from "./modals/UsbSelectorModal";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
             modals={{
               fileUpload: FileUploadModal,
               fileDownload: FileDownloadModal,
+              usbSelector: UsbSelectorModal,
             }}
           >
             <AppLayout>

@@ -1,50 +1,18 @@
 {
-  "name": "pin-install",
+  "name": "openpin-hub",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "workspaces": [
+    "web",
+    "desktop"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@mantine/core": "7.17.2",
-    "@mantine/hooks": "7.17.2",
-    "@mantine/modals": "^7.17.2",
-    "@octokit/rest": "^21.1.1",
-    "@tabler/icons-react": "^3.31.0",
-    "@tanstack/react-query": "^5.72.1",
-    "@xterm/addon-fit": "^0.10.0",
-    "axios": "^1.8.4",
-    "events": "^3.3.0",
-    "file-saver": "^2.0.5",
-    "lodash.merge": "^4.6.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-hook-form": "^7.55.0",
-    "react-markdown": "^10.1.0",
-    "uuid": "^11.1.0",
-    "wouter": "^3.6.0",
-    "xterm": "^5.3.0",
-    "zustand": "^5.0.3"
+    "dev:web": "npm --workspace web run dev",
+    "dev:desktop": "concurrently -k -n WEB,ELEC -c magenta,cyan \"npm run dev:web\" \"npm --workspace desktop run dev\"",
+    "build:web": "npm --workspace web run build",
+    "build:desktop": "npm --workspace web run build:electron && npm --workspace desktop run build"
   },
   "devDependencies": {
-    "@mdx-js/rollup": "^3.1.0",
-    "@types/events": "^3.0.3",
-    "@types/file-saver": "^2.0.7",
-    "@types/lodash": "^4.17.16",
-    "@types/lodash.merge": "^4.6.9",
-    "@types/node": "^22.14.0",
-    "@types/react": "^19.0.12",
-    "@types/react-dom": "^19.0.4",
-    "@types/w3c-web-usb": "^1.0.10",
-    "@vitejs/plugin-react": "^4.3.4",
-    "postcss": "^8.5.3",
-    "postcss-preset-mantine": "1.17.0",
-    "postcss-simple-vars": "^7.0.1",
-    "rollup": "^3.29.5",
-    "typescript": "^5.8.2",
-    "vite": "^6.2.2"
+    "concurrently": "^8.0.0",
+    "fast-glob": "^3.3.3"
   }
 }
