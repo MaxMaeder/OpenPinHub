@@ -13,6 +13,7 @@ import {
 import { Link } from "wouter";
 import classes from "./OpenPin.module.css";
 import NavCard from "./NavCard";
+import icon from "src/assets/icon.svg";
 
 const OpenPin = () => (
   <PageLayout hideTitle>
@@ -20,7 +21,7 @@ const OpenPin = () => (
       <Card shadow="sm" p="lg" mt="md" radius="md" bg="dark.4">
         <Stack>
           <Group>
-            <Image src="/logo.svg" h="3rem" />
+            <Image src={icon} h="3rem" />
             <Title order={1}>OpenPin</Title>
           </Group>
           <Text>

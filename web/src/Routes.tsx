@@ -11,11 +11,9 @@ import { Redirect, Route, Router, Switch } from "wouter";
 import Console from "./routes/Console";
 import RunAction from "./routes/installers/RunAction";
 import NotFound from "./components/NotFound";
-import { useHashLocation } from "wouter/use-hash-location";
-import { isElectron } from "./util/electron";
 
 const Routes = () => (
-  <Router hook={isElectron() ? useHashLocation : undefined}>
+  <Router>
     <Switch>
       <Route path="/">
         <Redirect to="/about/openpin" />

@@ -11,6 +11,8 @@ import {
 
 import classes from "./Hero.module.css";
 import { useMediaQuery } from "@mantine/hooks";
+import interposer from "src/assets/interposer.png";
+import heroBg from "src/assets/mirrored-squares.png";
 
 const Hero = () => {
   const theme = useMantineTheme();
@@ -23,6 +25,9 @@ const Hero = () => {
       p="xl"
       radius="xl"
       className={classes.paper}
+      style={{
+        backgroundImage: `url(${heroBg})`,
+      }}
     >
       <Box className={classes.flexContainer}>
         <Box className={classes.textContainer}>
@@ -48,11 +53,7 @@ const Hero = () => {
           </Button>
         </Box>
         <Box className={classes.imageContainer}>
-          <Box
-            component="img"
-            src="/interposer-v2.png"
-            className={classes.image}
-          />
+          <Box component="img" src={interposer} className={classes.image} />
           <Badge
             color="white"
             c="black"

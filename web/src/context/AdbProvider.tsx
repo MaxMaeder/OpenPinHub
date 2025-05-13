@@ -77,7 +77,7 @@ export const AdbProvider = ({ children }: AdbProviderProps) => {
 
   const connect = async () => {
     try {
-      openUsbSelectorModel();
+      // openUsbSelectorModel();
       const t = await WebUsbTransport.open(options);
 
       // Add USB disconnect listener

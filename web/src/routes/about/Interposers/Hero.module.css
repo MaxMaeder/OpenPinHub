@@ -1,8 +1,6 @@
 .paper {
   position: relative;
   width: 100%;
-  background-image: url("/mirrored-squares.png");
-
   aspect-ratio: 2.5;
   max-height: 40rem;
 }
