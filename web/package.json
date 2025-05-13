@@ -47,5 +47,8 @@
     "rollup": "^3.29.5",
     "typescript": "^5.8.2",
     "vite": "^6.2.2"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.40.0"
   }
 }
